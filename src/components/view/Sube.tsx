@@ -80,6 +80,12 @@ const Sube: React.FC = () => {
         </Col>
       </Form.Group>
 
+      <Form.Group as={Row} className="mb-3" controlId="formHorizontalCheck">
+        <Col sm={{ span: 10, offset: 2 }}>
+          <Form.Check label="Remember me" />
+        </Col>
+      </Form.Group>
+
       <Form.Group as={Row} className="mb-3">
         <Col sm={{ span: 10, offset: 2 }}>
           <Button type="submit">Sign in</Button>

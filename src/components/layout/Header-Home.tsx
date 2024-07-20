@@ -5,15 +5,17 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Logo from './img/logo_v2.png';
+
 function Header() {
   return (
     <Navbar expand="lg" style={{ backgroundColor: 'brown' }} variant="dark">
       <Container>
-        <Navbar.Brand href="/home">PROYECTECA</Navbar.Brand>
+        <Navbar.Brand href="/home"><img src={Logo} style={{ width: '120px', height:'50px' }}></img></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Inicio</Nav.Link>
+            <Nav.Link href="/proeyectos">Inicio</Nav.Link>
             <Nav.Link href="#link">Perfil</Nav.Link>
             <NavDropdown title="Carreras" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Ingeniería en Software</NavDropdown.Item>

@@ -1,9 +1,9 @@
 import React from 'react';
-// import './Proyectos.css';
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from '../layout/Header-Home';
 import Footer from '../layout/Footer';
@@ -13,6 +13,7 @@ const Proyectos: React.FC = () => {
   return (
 <>
     <Header/>
+
     <Row className="px-4 my-5" >
           <Col sm>
             <Card>
@@ -58,8 +59,6 @@ const Proyectos: React.FC = () => {
           </Col>
         </Row>
 
-
-
         <Row className="px-4 my-5" >
           <Col sm>
             <Card>
@@ -104,8 +103,6 @@ const Proyectos: React.FC = () => {
             </Card>
           </Col>
         </Row>
-
-
 <Footer/>
     </>
   );

@@ -7,7 +7,8 @@ import Home from "./components/view/Home";
 import Proyectos from "./components/view/Proyectos";
 import Test from "./components/view/test";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Sube from './components/view/Sube'; //direcciona
+import Sube from './components/view/Sube';
+import Vproyecto from './components/layout/Proyecto';
 
 const App: React.FC = () => {
   return (
@@ -43,7 +44,7 @@ const App: React.FC = () => {
         />
 
 
-<Route
+        <Route
           path="/test"
           element={
             <div>
@@ -53,7 +54,7 @@ const App: React.FC = () => {
         />
 
 
-<Route
+        <Route
           path="/sube"
           element={
             <div>
@@ -62,6 +63,14 @@ const App: React.FC = () => {
           }
         />
 
+        <Route
+          path="/proyecto"
+          element={
+            <div>
+              <Vproyecto/>
+            </div>
+          }
+        />
 
       </Routes>
       
