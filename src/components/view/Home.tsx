@@ -10,9 +10,11 @@ import Footer from "../layout/Footer";
 import img1 from "./img/Img_Home.jpg";
 import ClienteAxios from "../../config/axios";
 import { Project } from '../../types/Project'; // Importa la interfaz específica
+import { useNavigate } from 'react-router-dom';
 
-function CombinedView() {
+const CombinedView: React.FC = () => {
   const [proyectos, setProyectos] = useState<Project[]>([]); // Define el estado con la interfaz Project
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Función para obtener los proyectos del servidor
@@ -28,6 +30,10 @@ function CombinedView() {
 
     fetchProyectos();
   }, []);
+
+  const handleVerMas = (id: number) => {
+    navigate(`/proyecto/${id}`);
+  };
 
   return (
     <div>
@@ -63,8 +69,9 @@ function CombinedView() {
                 <Card.Body>
                   <Card.Title>{proyecto.proyecto_titulo}</Card.Title>
                   <Card.Text>{proyecto.proyecto_descripcion}</Card.Text>
+                  <Card.Text>Autor: {proyecto.autor_nombre}</Card.Text>
                   <div className="d-flex justify-content-end">
-                    <Button variant="primary">Ver mas</Button>
+                    <Button variant="primary" onClick={() => handleVerMas(proyecto.proyecto_id)}>Ver más</Button>
                   </div>
                 </Card.Body>
               </Card>
@@ -76,6 +83,6 @@ function CombinedView() {
       <Footer />
     </div>
   );
-}
+};
 
 export default CombinedView;
