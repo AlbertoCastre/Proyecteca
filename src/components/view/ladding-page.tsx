@@ -1,70 +1,46 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FiMenu, FiX } from 'react-icons/fi';
-import { GoogleLogin } from "@react-oauth/google";
-import { CredentialResponse } from '@react-oauth/google';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Style.css';
-
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { useUser } from '../../context/UserContext'; // Ajusta la ruta según tu estructura
+import axios from 'axios'; // Asegúrate de importar axios
 
 const LaddingPage = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useUser(); // Obtener la función para actualizar el usuario
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      console.log("Token recibido:", credentialResponse.credential); // Verifica el token aquí
 
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+      if (credentialResponse?.credential) {
+        const response = await axios.post('http://localhost:5003/auth/google', {
+          token: credentialResponse.credential
+        });
 
-  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
-    console.log(credentialResponse);
-    // Aquí puedes manejar la respuesta de credenciales, como guardar tokens en el estado o en el almacenamiento local
-    // Luego, redirigir al usuario a la vista "home"
-    navigate('/home');
-  };
+        console.log("Respuesta del servidor:", response);
 
-  const handleLoginError = () => {
-    console.log("Error al iniciar sesión, intenta de nuevo");
+        if (response.status === 200) {
+          setUser({ // Actualizar el contexto con los datos del usuario
+            name: response.data.user.usuario_nombre,
+            email: response.data.user.usuario_email,
+            googleId: response.data.user.usuario_google_id,
+          });
+          navigate('/home');
+        } else {
+          console.error("Error en la respuesta del servidor:", response.statusText);
+        }
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", (error as Error).message);
+    }
   };
 
   return (
-    
-    <div className="main-banner">
-    <div className="owl-carousel owl-banner">
-      <div className="item item-1">
-        <div className="header-text">
-          <span className="category"><em>Tu biblioteca confiable</em></span>
-          <h2>PROYECTECA</h2>
-
-          <GoogleLogin
-                onSuccess={handleLoginSuccess}
-                onError={handleLoginError}
-              />
-
- <div className={`menu-icon ${menuOpen ? 'open' : ''}`} onClick={toggleMenu}>
-            {menuOpen ? <FiX /> : <FiMenu />}
-          </div>
-          <ul className={`navbar ${menuOpen ? 'active' : ''}`}>
-            <li className="google-login-btn">
-             
-            </li>
-            {menuOpen && (
-              <li>
-                <button className="close-menu-btn" onClick={closeMenu}>
-                  Cerrar
-                </button>
-              </li>
-            )}
-
-          </ul>
-          </div>
-          </div>
-        </div>
-      </div>   
+    <div className="login-page">
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}
+      />
+    </div>
   );
 };
 
