@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Footer from "../layout/Footer";
 import { useDropzone } from "react-dropzone";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -7,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import ClienteAxios from "../../config/axios";
 import { useUser } from "../../context/UserContext";
 import HeaderHome from "../layout/Header-Home";
+import Modal from "react-bootstrap/Modal";
 
 interface Categoria {
   categoria_id: number;
@@ -16,6 +18,20 @@ interface Categoria {
 interface Carrera {
   carrera_id: number;
   carrera_nombre: string;
+}
+
+function SwitchExample({ isChecked, onChange }: { isChecked: boolean; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+  return (
+    <Form>
+      <Form.Check
+        type="switch"
+        id="custom-switch"
+        label="Acepto que este trabajo es de mi propiedad y no es plagio"
+        checked={isChecked}
+        onChange={onChange}
+      />
+    </Form>
+  );
 }
 
 const Sube: React.FC = () => {
@@ -36,6 +52,10 @@ const Sube: React.FC = () => {
   const [titulo, setTitulo] = useState<string>("");
   const [descripcion, setDescripcion] = useState<string>("");
   const [archivo, setArchivo] = useState<File | null>(null);
+
+  const [isAccepted, setIsAccepted] = useState<boolean>(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
   useEffect(() => {
     // Obtener categorías
@@ -92,6 +112,17 @@ const Sube: React.FC = () => {
         },
       });
       console.log("Proyecto subido:", uploadResponse.data);
+
+      // Mostrar el modal solo si el envío fue exitoso
+      setShow(true);
+
+      // Limpiar los campos del formulario
+      setTitulo("");
+      setDescripcion("");
+      setSelectedCategoria("");
+      setSelectedCarrera("");
+      setArchivo(null);
+      setIsAccepted(false);
     } catch (error) {
       console.error("Error al obtener el usuario_id o al subir el proyecto:", error);
     }
@@ -196,12 +227,33 @@ const Sube: React.FC = () => {
           </div>
         </Form.Group>
 
+        <SwitchExample
+          isChecked={isAccepted}
+          onChange={(e) => setIsAccepted(e.target.checked)}
+        />
+
         <Form.Group as={Row} className="mb-3">
           <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="submit">Publicar proyecto</Button>
+            <Button type="submit" disabled={!isAccepted}>
+              Publicar proyecto
+            </Button>
           </Col>
         </Form.Group>
       </Form>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Proyecto Publicado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¡El proyecto ha sido publicado exitosamente!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Footer />
     </>
   );
 };
