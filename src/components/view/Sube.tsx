@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import Form from "react-bootstrap/Form";
@@ -7,17 +6,6 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ClienteAxios from "../../config/axios";
 import { useUser } from "../../context/UserContext";
-
-import React, { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import Form from 'react-bootstrap/Form';
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import { DropdownButton, Dropdown } from 'react-bootstrap';
-
-import './Style.css'; //importa Style.css
-
 import HeaderHome from "../layout/Header-Home";
 
 interface Categoria {
@@ -40,7 +28,6 @@ const Sube: React.FC = () => {
     },
   });
 
-
   const { user } = useUser();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
@@ -49,18 +36,6 @@ const Sube: React.FC = () => {
   const [titulo, setTitulo] = useState<string>("");
   const [descripcion, setDescripcion] = useState<string>("");
   const [archivo, setArchivo] = useState<File | null>(null);
-  const [selectedOption, setSelectedOption] = useState<string>('Programa educativo');
-
-  // Función para manejar la selección de una opción
-  const handleSelect = (eventKey: string | null) => {
-    if (eventKey) {
-      setSelectedOption(eventKey);
-    }
-  };
-
-  return (
-    <>
-
 
   useEffect(() => {
     // Obtener categorías
@@ -74,7 +49,6 @@ const Sube: React.FC = () => {
       .catch((error) => console.error("Error al obtener carreras:", error));
   }, []);
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -82,67 +56,11 @@ const Sube: React.FC = () => {
       alert("Usuario no autenticado");
       return;
     }
-<Form.Group className="mb-3">
-            <Form.Label>Fecha de expedición</Form.Label>
-            <div className="d-flex">
-              <Form.Group className="me-2">
-                <Form.Label>Día</Form.Label>
-                <Form.Control type="text" placeholder="" readOnly />
-              </Form.Group>
-              <Form.Group className="me-2">
-                <Form.Label>Mes</Form.Label>
-                <Form.Control type="text" placeholder="" readOnly />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Año</Form.Label>
-                <Form.Control type="text" placeholder="" readOnly />
-              </Form.Group>
-            </div>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicText">
-            <Form.Label>Nombre del autor</Form.Label>
-            <Form.Control type="text" placeholder="" className="texto" />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicText">
-          
 
-          <DropdownButton
-      id="dropdown-basic-button"
-      title={selectedOption}
-      onSelect={handleSelect} // Añade esta propiedad
-
-      
-    >
-      <Dropdown.Item eventKey="Ingeniería en Software">Ingeniería en Software</Dropdown.Item>
-      <Dropdown.Item eventKey="Ingeniería Financiera">Ingeniería Financiera</Dropdown.Item>
-      <Dropdown.Item eventKey="Ingeniería en Biomédica">Ingeniería en Biomédica</Dropdown.Item>
-      <Dropdown.Item eventKey="Ingeniería en Biotecnología">Ingeniería en Biotecnología</Dropdown.Item>
-      <Dropdown.Item eventKey="Licenciatura en Terapia Física">Licenciatura en Terapia Física</Dropdown.Item>
-      <Dropdown.Item eventKey="Licenciatura en Administración y Gestión Empresarial">Licenciatura en Administración y Gestión Empresarial</Dropdown.Item>
-    </DropdownButton>
-
-          </Form.Group>
-        </Form.Group>
-
-
-        
-
-        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" style={{ padding:'30px 100px'}}>
-          <Form.Label>Descripción del proyecto</Form.Label>
-          <Form.Control as="textarea" rows={6} style={{ height: '300px', width: '600px'  }} />
-        </Form.Group>
-      </div>
-
-      <Form.Group className="position-relative mb-3" {...getRootProps()}>
-        <Form.Label>Subir archivo (PDF)</Form.Label>
-        <div className={`dropzone ${isDragActive ? 'active' : ''}`}>
-          <input {...getInputProps()} />
-          
-          <i className="bi bi-cloud-arrow-up" style={{ fontSize: '60px', marginBottom: '15px' }}></i>
-          <p>Arrastre y suelte los archivos aquí para subirlos</p>
-        </div>
-      </Form.Group>
-  
+    if (!titulo || !descripcion || !selectedCategoria || !selectedCarrera || !archivo) {
+      alert("Todos los campos son obligatorios");
+      return;
+    }
 
     try {
       // Obtener el usuario_id usando el googleId
@@ -151,26 +69,16 @@ const Sube: React.FC = () => {
       });
       const usuarioId = response.data.usuario_id;
 
-      if (
-        !titulo ||
-        !descripcion ||
-        !selectedCategoria ||
-        !selectedCarrera ||
-        !archivo
-      ) {
-        alert("Todos los campos son obligatorios");
-        return;
-      }
-
       const formData = new FormData();
+      formData.append("action", "insert");
       formData.append("proyecto_titulo", titulo);
       formData.append("proyecto_descripcion", descripcion);
       formData.append("proyecto_fecha_subida", new Date().toISOString());
       formData.append("categoria_id", selectedCategoria);
       formData.append("carrera_id", selectedCarrera);
       formData.append("estado_id", "1"); // Añade el estado seleccionado si lo tienes
-      formData.append("archivo_pdf", archivo);
-      formData.append("usuario_id", usuarioId.toString()); // Agregar el user_id al FormData
+      formData.append("proyecto_archivo_pdf", archivo);
+      formData.append("usuario_id", usuarioId.toString());
 
       // Verifica los datos del FormData
       console.log("Datos del FormData:");
@@ -185,10 +93,7 @@ const Sube: React.FC = () => {
       });
       console.log("Proyecto subido:", uploadResponse.data);
     } catch (error) {
-      console.error(
-        "Error al obtener el usuario_id o al subir el proyecto:",
-        error
-      );
+      console.error("Error al obtener el usuario_id o al subir el proyecto:", error);
     }
   };
 
@@ -197,100 +102,77 @@ const Sube: React.FC = () => {
       <HeaderHome />
 
       <Form className="p-4" onSubmit={handleSubmit}>
-        <div className="d-flex">
-          <Form.Group>
-            <Form.Group className="mb-3" controlId="titulo">
-              <Form.Label>Título del proyecto</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder=""
-                className="texto"
-                value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-                required
-              />
-            </Form.Group>
+        <Form.Group className="mb-3" controlId="titulo">
+          <Form.Label>Título del proyecto</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Título del proyecto"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+            required
+          />
+        </Form.Group>
 
-            <Form.Group className="mb-3" controlId="autor">
-              <Form.Label>Nombre del autor</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder={user?.name}
-                readOnly
-                className="texto"
-              />
-            </Form.Group>
+        <Form.Group className="mb-3" controlId="autor">
+          <Form.Label>Nombre del autor</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder={user?.name || "Nombre del autor"}
+            readOnly
+          />
+        </Form.Group>
 
-            <Form.Group className="mb-3" controlId="carrera">
-              <Form.Label>Programa educativo</Form.Label>
-              <Form.Control
-                as="select"
-                value={selectedCarrera}
-                onChange={(e) => setSelectedCarrera(e.target.value)}
-                className="texto"
-                required
-              >
-                <option value="">Selecciona una carrera</option>
-                {carreras.map((carrera) => (
-                  <option key={carrera.carrera_id} value={carrera.carrera_id}>
-                    {carrera.carrera_nombre}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+        <Form.Group className="mb-3" controlId="carrera">
+          <Form.Label>Programa educativo</Form.Label>
+          <Form.Control
+            as="select"
+            value={selectedCarrera}
+            onChange={(e) => setSelectedCarrera(e.target.value)}
+            required
+          >
+            <option value="">Selecciona una carrera</option>
+            {carreras.map((carrera) => (
+              <option key={carrera.carrera_id} value={carrera.carrera_id}>
+                {carrera.carrera_nombre}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
 
-            <Form.Group className="mb-3" controlId="categoria">
-              <Form.Label>Categoría</Form.Label>
-              <Form.Control
-                as="select"
-                value={selectedCategoria}
-                onChange={(e) => setSelectedCategoria(e.target.value)}
-                className="texto"
-                required
-              >
-                <option value="">Selecciona una categoría</option>
-                {categorias.map((categoria) => (
-                  <option
-                    key={categoria.categoria_id}
-                    value={categoria.categoria_id}
-                  >
-                    {categoria.categoria_nombre}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          </Form.Group>
+        <Form.Group className="mb-3" controlId="categoria">
+          <Form.Label>Categoría</Form.Label>
+          <Form.Control
+            as="select"
+            value={selectedCategoria}
+            onChange={(e) => setSelectedCategoria(e.target.value)}
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            {categorias.map((categoria) => (
+              <option key={categoria.categoria_id} value={categoria.categoria_id}>
+                {categoria.categoria_nombre}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
 
-          <Form.Group className="mb-3" controlId="descripcion">
-            <Form.Label>Descripción del proyecto</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={6}
-              style={{ height: "300px", width: "600px", resize: "none" }}
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              required
-            />
-          </Form.Group>
-        </div>
+        <Form.Group className="mb-3" controlId="descripcion">
+          <Form.Label>Descripción del proyecto</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={6}
+            style={{ resize: "none" }}
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            required
+          />
+        </Form.Group>
 
-        <Form.Group
-          className={`position-relative mb-3 dropzone-container ${
-            archivo ? "file-selected" : ""
-          }`}
-          {...getRootProps()}
-        >
+        <Form.Group className="position-relative mb-3" {...getRootProps()}>
           <Form.Label>Subir archivo (PDF)</Form.Label>
           <div className={`dropzone ${isDragActive ? "active" : ""}`}>
             <input
-              {...getInputProps({
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                  if (e.target.files) {
-                    setArchivo(e.target.files[0]);
-                  }
-                },
-              })}
-              name="archivo_pdf"
+              {...getInputProps()}
               style={{
                 position: "absolute",
                 left: "0",
@@ -308,7 +190,7 @@ const Sube: React.FC = () => {
             ></i>
             <p>
               {archivo
-                ? "Archivo seleccionado: " + archivo.name
+                ? `Archivo seleccionado: ${archivo.name}`
                 : "Arrastre y suelte los archivos aquí para subirlos"}
             </p>
           </div>
