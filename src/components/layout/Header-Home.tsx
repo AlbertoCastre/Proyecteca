@@ -17,6 +17,9 @@ function Header() {
   };
 
   return (
+
+    <>
+
     <Navbar expand="lg" style={{ backgroundColor: 'brown' }} variant="dark">
       <Container>
         <Navbar.Brand href="/home">
@@ -28,14 +31,14 @@ function Header() {
             <Nav.Link href="/proyectos">Inicio</Nav.Link>
             <Nav.Link href="#link">Perfil</Nav.Link>
             <NavDropdown title="Carreras" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Ingeniería en Software</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Ingeniería Financiera</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Ingeniería en Biomédica</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.4">Ingeniería en Biotecnología</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.5">Licenciatura en Terapia Física</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.5">Licenciatura en Administración y Gestión Empresarial</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Ingeniería en Software</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Ingeniería Financiera</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Ingeniería en Biomédica</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Ingeniería en Biotecnología</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Licenciatura en Terapia Física</NavDropdown.Item>
+              <NavDropdown.Item href="/Proyectos">Licenciatura en Administración y Gestión Empresarial</NavDropdown.Item>
+          
+             
             </NavDropdown>
             {user && (
               <Nav.Link href="/sube">Publicar un Proyecto</Nav.Link>
@@ -47,8 +50,9 @@ function Header() {
             Signed in as: {user ? <a href="#profile">{user.name}</a> : 'Guest'}
           </Navbar.Text>
         </Navbar.Collapse>
+
         <Dropdown as={ButtonGroup} style={{ marginLeft: '5px' }}>
-          <Dropdown.Toggle split variant="success" id="dropdown-split-basic" style={{ backgroundColor: 'brown' }} />
+          <Dropdown.Toggle split variant="success" id="dropdown-split-basic" style={{ backgroundColor: 'transparent', border:'transparent' }} />
           <Dropdown.Menu>
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
@@ -57,6 +61,8 @@ function Header() {
         </Dropdown>
       </Container>
     </Navbar>
+
+    </>
   );
 }
 
