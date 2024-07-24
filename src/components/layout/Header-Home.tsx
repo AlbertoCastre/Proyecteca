@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUser } from '../../context/UserContext'; // Ajusta la ruta según tu estructura
+import { useUser } from '../../context/UserContext';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -13,8 +13,7 @@ function Header() {
 
   const handleLogout = () => {
     logout();
-    // Redirige al usuario a la página de inicio o login después de cerrar sesión si es necesario
-    window.location.href = '/'; // Ajusta la ruta según tu estructura
+    window.location.href = '/';
   };
 
   return (
@@ -38,6 +37,9 @@ function Header() {
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
             </NavDropdown>
+            {user && (
+              <Nav.Link href="/sube">Publicar un Proyecto</Nav.Link>
+            )}
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
@@ -50,7 +52,7 @@ function Header() {
           <Dropdown.Menu>
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item onClick={handleLogout}>Cerrar sesión</Dropdown.Item> {/* Cierre de sesión */}
+            {user && <Dropdown.Item onClick={handleLogout}>Cerrar sesión</Dropdown.Item>}
           </Dropdown.Menu>
         </Dropdown>
       </Container>
