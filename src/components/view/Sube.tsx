@@ -70,8 +70,6 @@ const Sube: React.FC = () => {
       id="dropdown-basic-button"
       title={selectedOption}
       onSelect={handleSelect} // Añade esta propiedad
-
-      
     >
       <Dropdown.Item eventKey="Ingeniería en Software">Ingeniería en Software</Dropdown.Item>
       <Dropdown.Item eventKey="Ingeniería Financiera">Ingeniería Financiera</Dropdown.Item>
