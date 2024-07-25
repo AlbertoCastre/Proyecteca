@@ -6,7 +6,8 @@ import LaddingPage from "./components/view/ladding-page";
 import Home from "./components/view/Home";
 import Proyectos from "./components/view/Proyectos";
 import Test from "./components/view/test";
- import Sube from './components/view/Sube';
+import Admin from './components/view/Admin';
+import Sube from './components/view/Sube';
 import Proyecto from './components/layout/Proyecto';
 import { UserProvider } from "./context/UserContext";
 
@@ -22,8 +23,10 @@ const App: React.FC = () => {
             <Route path="/test" element={<Test />} />
             { <Route path="/sube" element={<Sube />} /> }
             <Route path="/proyecto/:id" element={<Proyecto />} />
+             <Route path="/admin" element={<Admin />} />
           </Routes>
         </UserProvider>
+
       </GoogleOAuthProvider>
     </Router>
   );
