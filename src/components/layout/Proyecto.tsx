@@ -9,8 +9,23 @@ import { useParams } from "react-router-dom";
 import * as pdfjsLib from 'pdfjs-dist';
 import 'pdfjs-dist/web/pdf_viewer.css';
 
+// Configura la ubicación del worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+interface Categoria {
+  categoria_id: number;
+  categoria_nombre: string;
+}
+
+interface Carrera {
+  carrera_id: number;
+  carrera_nombre: string;
+}
+
 const Proyecto: React.FC = () => {
     const [proyecto, setProyecto] = useState<Project | null>(null); // Usa la interfaz Project
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [carreras, setCarreras] = useState<Carrera[]>([]);
     const { id } = useParams<{ id: string }>(); // Obtiene el id del parámetro de la ruta
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,19 +34,34 @@ const Proyecto: React.FC = () => {
     const [zoom, setZoom] = useState(1);
 
     useEffect(() => {
+        // Obtener categorías
+        ClienteAxios.get("/categorias")
+            .then((response) => setCategorias(response.data))
+            .catch((error) => console.error("Error al obtener categorías:", error));
+
+        // Obtener carreras
+        ClienteAxios.get("/carreras")
+            .then((response) => setCarreras(response.data))
+            .catch((error) => console.error("Error al obtener carreras:", error));
+    }, []);
+
+    useEffect(() => {
         // Función para obtener el proyecto del servidor
         const fetchProyecto = async () => {
             try {
                 const response = await ClienteAxios.get(`/proyecto/${id}`);
                 setProyecto(response.data);
                 // Cargar PDF después de obtener el proyecto
-                const loadingTask = pdfjsLib.getDocument('./my_document.pdf'); // Ajusta la ruta del PDF
-                loadingTask.promise.then((loadedPdf) => {
-                    setPdf(loadedPdf);
-                });
-
+                if (response.data.proyecto_archivo_pdf) {
+                    // En lugar de cargar desde datos del proyecto, carga el PDF desde el nuevo endpoint
+                    const pdfResponse = await ClienteAxios.get(`/proyecto/${id}/pdf`, { responseType: 'arraybuffer' });
+                    const loadingTask = pdfjsLib.getDocument({ data: pdfResponse.data });
+                    loadingTask.promise.then((loadedPdf) => {
+                        setPdf(loadedPdf);
+                    });
+                }
             } catch (error) {
-                console.error("Error al obtener el proyecto vuelve a intentarlo:", error);
+                console.error("Error al obtener el proyecto o el archivo PDF:", error);
             }
         };
 
@@ -92,6 +122,10 @@ const Proyecto: React.FC = () => {
         return <p>Cargando...</p>; // Muestra un mensaje mientras se carga el proyecto
     }
 
+    // Encuentra la categoría y la carrera por ID
+    const categoriaNombre = categorias.find(c => c.categoria_id === proyecto.categoria_id)?.categoria_nombre || "Desconocida";
+    const carreraNombre = carreras.find(c => c.carrera_id === proyecto.carrera_id)?.carrera_nombre || "Desconocida";
+
     return (
         <>
             <Header />
@@ -113,7 +147,12 @@ const Proyecto: React.FC = () => {
 
                     <p>
                         <strong>Carrera: </strong>
-                        {/* <br /> {proyecto.Carrera} */}
+                        <br /> {carreraNombre}
+                    </p>
+
+                    <p>
+                        <strong>Categoría: </strong>
+                        <br /> {categoriaNombre}
                     </p>
 
                     <p>
@@ -121,8 +160,7 @@ const Proyecto: React.FC = () => {
                         <br />
                         {proyecto.proyecto_descripcion}
                     </p>
-                    
-                  
+
                     <div id="my_pdf_viewer">
                         <div id="canvas_container" style={{ background: '#333', textAlign: 'center', border: 'solid 3px' }}>
                             <canvas id="pdf_renderer" ref={canvasRef}></canvas>
@@ -157,4 +195,5 @@ const Proyecto: React.FC = () => {
         </>
     );
 };
+
 export default Proyecto;
