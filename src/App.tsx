@@ -8,6 +8,7 @@ import Test from "./components/view/test";
 import Sube from './components/view/Sube';
 import Proyecto from './components/layout/Proyecto'; // Cambié la ruta para la vista de proyecto
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Admin from './components/view/Admin';
 
 const App: React.FC = () => {
   return (
@@ -43,7 +44,10 @@ const App: React.FC = () => {
             path="/proyecto/:id" // Modificado para aceptar un parámetro de ID
             element={<Proyecto />}
           />
-
+ <Route
+            path="/admin"
+            element={<Admin />}
+          />
         </Routes>
       </GoogleOAuthProvider>
     </Router>
