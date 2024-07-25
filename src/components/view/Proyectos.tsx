@@ -7,7 +7,7 @@ import { Form, Button } from 'react-bootstrap';
 
 import Header from '../layout/Header-Home';
 import Footer from '../layout/Footer';
-import { FiAlignJustify } from 'react-icons/fi';
+// import { FiAlignJustify } from 'react-icons/fi';
 
 
 
