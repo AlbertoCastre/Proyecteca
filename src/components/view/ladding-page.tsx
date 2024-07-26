@@ -26,6 +26,7 @@ const LaddingPage = () => {
             name: response.data.user.usuario_nombre,
             email: response.data.user.usuario_email,
             googleId: response.data.user.usuario_google_id,
+            rol: response.data.user.usuario_rol, // Asegúrate de mapear el rol correctamente
           });
           navigate('/home');
         } else {
