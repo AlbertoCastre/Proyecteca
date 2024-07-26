@@ -1,12 +1,14 @@
+// src/context/UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
-interface User {
+export interface User {
   id: number;
   name: string;
   email: string;
   googleId: string;
+  rol: number;
+  profileImageUrl?: string; // Añadir la URL de la imagen de perfil
 }
-
 
 interface UserContextType {
   user: User | null;

@@ -11,6 +11,7 @@ import Sube from './components/view/Sube';
 import Proyecto from './components/layout/Proyecto';
 import Profile from './components/view/Profile';
 import { UserProvider } from "./context/UserContext";
+import UpdateProject from "./components/view/Update";
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: React.FC = () => {
             <Route path="/proyecto/:id" element={<Proyecto />} />
              <Route path="/admin" element={<Admin />} />
              <Route path="/profile" element={<Profile />} />
+             <Route path="/sube/:proyecto_id" element={<UpdateProject />} />
           </Routes>
         </UserProvider>
 
