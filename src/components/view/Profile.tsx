@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { MDBCard, MDBCardBody, MDBCardImage, MDBCardText } from "mdb-react-ui-kit";
+import {
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBCardText,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+} from "mdb-react-ui-kit";
 import Header from "../layout/Header-Home";
 import Footer from "../layout/Footer";
 import ClienteAxios from "../../config/axios";
 import { useUser } from "../../context/UserContext";
-import { Spinner, Button, Card, Container, Row, Col, Pagination, Form } from "react-bootstrap";
+import { Spinner, Button, Card, Container, Row, Col, Pagination, Modal, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Project } from "../../types/Project";
 
@@ -14,12 +22,14 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const projectsPerPage = 9;
-  const [carreras, setCarreras] = useState<Carrera[]>([]);
-  const [nombre, setNombre] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [carrera, setCarrera] = useState<number | "">("");
-  const [matricula, setMatricula] = useState<string>("");
-  const [formLoading, setFormLoading] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    matricula: "",
+    carrera: "",
+  });
+  const [carreras, setCarreras] = useState<{ carrera_id: number; carrera_nombre: string }[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,13 +39,10 @@ const ProfilePage: React.FC = () => {
           const userResponse = await ClienteAxios.get(`/usuarios/por-google-id`, {
             params: { googleId: user.googleId },
           });
-
           const usuarioId = userResponse.data.usuario_id;
-
           const projectsResponse = await ClienteAxios.get(`/proyectos/por-usuario`, {
             params: { usuarioId },
           });
-
           setProjects(projectsResponse.data);
         }
       } catch (err) {
@@ -49,55 +56,42 @@ const ProfilePage: React.FC = () => {
       try {
         const response = await ClienteAxios.get("/carreras");
         setCarreras(response.data);
-      } catch (error) {
-        console.error("Error al obtener carreras:", error);
+      } catch (err) {
+        console.error("Error al obtener carreras:", err);
       }
     };
 
     fetchUserProjects();
     fetchCarreras();
+
+    // Check if the user needs to fill out the form
+    const checkUserData = async () => {
+      if (user?.googleId) {
+        try {
+          const response = await ClienteAxios.get("/usuarios/por-google-id", {
+            params: { googleId: user.googleId },
+          });
+          const userData = response.data;
+          if (!userData.usuario_nombre || !userData.usuario_email || !userData.usuario_matricula) {
+            setShowModal(true);
+          }
+          setFormData({
+            nombre: userData.usuario_nombre || user.name,
+            email: userData.usuario_email || user.email,
+            matricula: userData.usuario_matricula || user.email.split('@')[0],
+            carrera: userData.carrera_id || "",
+          });
+        } catch (err) {
+          console.error("Error al obtener datos del usuario:", err);
+        }
+      }
+    };
+
+    checkUserData();
   }, [user]);
 
   const handleVerMas = (id: number) => {
     navigate(`/proyecto/${id}`);
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setFormLoading(true);
-
-    try {
-      const response = await ClienteAxios.get("/usuarios/por-google-id", {
-        params: { googleId: user?.googleId },
-      });
-      const usuarioId = response.data.usuario_id;
-
-      const formData = new FormData();
-      formData.append("action", "update");
-      formData.append("usuario_id", usuarioId.toString());
-      formData.append("usuario_nombre", nombre);
-      formData.append("usuario_email", email);
-      formData.append("usuario_google_id", user?.googleId || "");
-      formData.append("usuario_fecha_registro", new Date().toISOString());
-      formData.append("carrera_id", carrera.toString());
-      formData.append("usuario_matricula", matricula);
-
-      console.log("Datos del FormData:");
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-
-      const uploadResponse = await ClienteAxios.post("/usuarios", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("Usuario actualizado:", uploadResponse.data);
-    } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-    } finally {
-      setFormLoading(false);
-    }
   };
 
   const indexOfLastProject = currentPage * projectsPerPage;
@@ -106,8 +100,41 @@ const ProfilePage: React.FC = () => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const usuarioId = (await ClienteAxios.get("/usuarios/por-google-id", {
+        params: { googleId: user.googleId },
+      })).data.usuario_id;
+
+      const response = await ClienteAxios.post("/usuarios", {
+        action: "update",
+        usuario_id: usuarioId,
+        usuario_nombre: formData.nombre,
+        usuario_email: formData.email,
+        usuario_google_id: user.googleId,
+        usuario_fecha_registro: new Date().toISOString(),
+        carrera_id: formData.carrera,
+        usuario_matricula: formData.matricula,
+      });
+
+      console.log("Respuesta del servidor:", response.data);
+      handleCloseModal();
+    } catch (err) {
+      console.error("Error al actualizar usuario:", err);
+    }
+  };
+
   return (
-    <div>
+    <>
       <Header />
       <section className="py-5">
         <Container className="py-5">
@@ -135,7 +162,7 @@ const ProfilePage: React.FC = () => {
                       <MDBCardText>Full Name</MDBCardText>
                     </Col>
                     <Col sm="9">
-                      <MDBCardText className="text-muted">{user?.name}</MDBCardText>
+                      <MDBCardText className="text-muted">{formData.nombre}</MDBCardText>
                     </Col>
                   </Row>
                   <hr />
@@ -144,7 +171,7 @@ const ProfilePage: React.FC = () => {
                       <MDBCardText>Email</MDBCardText>
                     </Col>
                     <Col sm="9">
-                      <MDBCardText className="text-muted">{user?.email}</MDBCardText>
+                      <MDBCardText className="text-muted">{formData.email}</MDBCardText>
                     </Col>
                   </Row>
                   <hr />
@@ -211,75 +238,71 @@ const ProfilePage: React.FC = () => {
             </>
           )}
         </Container>
-
-        <Container>
-          <h1>Actualizar Usuario</h1>
-          {formLoading ? (
-            <div className="d-flex justify-content-center">
-              <Spinner animation="grow" />
-            </div>
-          ) : (
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="formNombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingrese su nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group controlId="formEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Ingrese su email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group controlId="formCarrera">
-                <Form.Label>Carrera</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={carrera}
-                  onChange={(e) => setCarrera(Number(e.target.value))}
-                  required
-                >
-                  <option value="">Seleccione una carrera</option>
-                  {carreras.map((carrera) => (
-                    <option key={carrera.carrera_id} value={carrera.carrera_id}>
-                      {carrera.carrera_nombre}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formMatricula">
-                <Form.Label>Matricula</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingrese su matricula"
-                  value={matricula}
-                  onChange={(e) => setMatricula(e.target.value)}
-                  required
-                />
-              </Form.Group>
-
-              <Button variant="primary" type="submit">
-                Guardar
-              </Button>
-            </Form>
-          )}
-        </Container>
       </section>
-      <Footer />
-    </div>
-  );
+
+      {/* Modal de actualización de usuario */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Actualizar Información</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formNombre">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formEmail">
+              <Form.Label>Email
+</Form.Label>
+<Form.Control
+type="email"
+name="email"
+value={formData.email}
+onChange={handleInputChange}
+readOnly
+/>
+</Form.Group>
+<Form.Group controlId="formMatricula">
+<Form.Label>Matricula</Form.Label>
+<Form.Control
+type="text"
+name="matricula"
+value={formData.matricula}
+onChange={handleInputChange}
+required
+/>
+</Form.Group>
+<Form.Group controlId="formCarrera">
+<Form.Label>Carrera</Form.Label>
+<Form.Control
+as="select"
+name="carrera"
+value={formData.carrera}
+onChange={handleInputChange}
+required
+>
+<option value="">Selecciona una carrera</option>
+{carreras.map((carrera) => (
+<option key={carrera.carrera_id} value={carrera.carrera_id}>
+{carrera.carrera_nombre}
+</option>
+))}
+</Form.Control>
+</Form.Group>
+<Button variant="primary" type="submit" className="mt-3">
+Guardar
+</Button>
+</Form>
+</Modal.Body>
+</Modal>
+</>
+);
 };
 
 export default ProfilePage;
