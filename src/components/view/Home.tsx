@@ -13,20 +13,20 @@ import { Project } from '../../types/Project'; // Importa la interfaz específic
 import { useNavigate } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
 import Spinner from 'react-bootstrap/Spinner';
+import { useUser } from "../../context/UserContext"; // Importa el UserContext
 
 const CombinedView: React.FC = () => {
-  const [proyectos, setProyectos] = useState<Project[]>([]); // Define el estado con la interfaz Project
+  const [proyectos, setProyectos] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const projectsPerPage = 9;
+  const { user } = useUser(); // Obtiene el usuario actual
 
   useEffect(() => {
-    // Función para obtener los proyectos del servidor
     const fetchProyectos = async () => {
       try {
         const response = await ClienteAxios.get('/home');
-        console.log(response.data);
         setProyectos(response.data);
       } catch (error) {
         console.error("Error al obtener proyectos:", error);
@@ -36,7 +36,7 @@ const CombinedView: React.FC = () => {
     };
 
     fetchProyectos();
-  }, []);
+  }, [user]);
 
   const handleVerMas = (id: number) => {
     navigate(`/proyecto/${id}`);
@@ -54,7 +54,7 @@ const CombinedView: React.FC = () => {
       <HeaderHome />
 
       <Container className="px-4 my-5">
-        <Row >
+        <Row>
           <Col sm={7}>
             <Image
               src={img1}
@@ -65,7 +65,7 @@ const CombinedView: React.FC = () => {
           </Col>
           <Col sm={5}>
             <h1 className="font-weight-light">Bienvenido</h1>
-            <p >
+            <p>
               Te invitamos a descubrir un espacio confiable y siempre accesible, donde podrás almacenar y compartir tus trabajos. Aquí, tus proyectos estarán protegidos y disponibles en cualquier momento y lugar, permitiéndote acceder a ellos con facilidad y tranquilidad.
             </p>
           </Col>
@@ -89,8 +89,9 @@ const CombinedView: React.FC = () => {
                       <Card.Title>{proyecto.proyecto_titulo}</Card.Title>
                       <Card.Text>{proyecto.proyecto_descripcion}</Card.Text>
                       <Card.Text>Autor: {proyecto.autor_nombre}</Card.Text>
-                      <div className="d-flex justify-content-end">
+                      <div className="d-flex justify-content-between">
                         <Button variant="primary" onClick={() => handleVerMas(proyecto.proyecto_id)}>Ver más</Button>
+                        {/* Eliminado el botón de edición */}
                       </div>
                     </Card.Body>
                   </Card>
