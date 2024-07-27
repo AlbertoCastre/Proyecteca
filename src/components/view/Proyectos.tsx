@@ -1,138 +1,94 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import HeaderHome from "../layout/Header-Home";
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button } from 'react-bootstrap';
-
-import Header from '../layout/Header-Home';
-import Footer from '../layout/Footer';
-// import { FiAlignJustify } from 'react-icons/fi';
-
-
-
-
+import Col from "react-bootstrap/Col";
+import Footer from "../layout/Footer";
+import ClienteAxios from "../../config/axios";
+import { Project } from "../../types/Project";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Proyectos: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [carreras, setCarreras] = useState<{ carrera_id: number; carrera_nombre: string }[]>([]);
+  const { carreraId } = useParams<{ carreraId: string }>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        if (carreraId) {
+          const response = await ClienteAxios.get(`/proyectos/carrera/${carreraId}`);
+          setProjects(response.data);
+        } else {
+          const response = await ClienteAxios.get("/home");
+          setProjects(response.data);
+        }
+      } catch (error) {
+        console.error("Error al obtener proyectos:", error);
+      }
+    };
+
+    const fetchCarreras = async () => {
+      try {
+        const response = await ClienteAxios.get("/carreras");
+        setCarreras(response.data);
+      } catch (error) {
+        console.error("Error al obtener carreras:", error);
+      }
+    };
+
+    fetchProjects();
+    fetchCarreras();
+  }, [carreraId]);
+
+  const handleCarreraChange = (eventKey: string | null) => {
+    if (eventKey) {
+      navigate(`/proyectos/carrera/${eventKey}`);
+    } else {
+      navigate("/home");
+    }
+  };
+
   return (
-<>
-    <Header/>
-
-
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <Row className="px-4 my-5 align-items-center" style={{ width: '100%', maxWidth: '1200px' }}>
-        <Col sm={5}>
-         
-          <p className="mt-4">
-          <h1 className="font-weight-light">Ingenieria en software </h1>
-          </p>
-        </Col>
-        <Col sm={7}>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
-        </Col>
-      </Row>
-    </div>
-
-
-
-    <Row className="px-4 my-5" >
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Investigación de campo</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
+    <>
+      <HeaderHome />
+      <Container className="my-4">
+        <Row className="justify-content-between align-items-center mb-3">
+          <Col md="auto">
+            <h2>Proyectos Aprobados</h2>
           </Col>
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Ingenieria Biomedica</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Paginas con react</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
+          <Col md="auto">
+            <NavDropdown title="Seleccionar Carrera" onSelect={handleCarreraChange}>
+              <NavDropdown.Item eventKey="">Todas las carreras</NavDropdown.Item>
+              {carreras.map((carrera) => (
+                <NavDropdown.Item key={carrera.carrera_id} eventKey={carrera.carrera_id.toString()}>
+                  {carrera.carrera_nombre}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
           </Col>
         </Row>
-
-        <Row className="px-4 my-5" >
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Investigación de campo</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Ingenieria Biomedica</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm>
-            <Card>
-              <Card.Body>
-                <Card.Title>Paginas con react</Card.Title>
-                <Card.Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
-                  ratione aut dolores quas atque distinctio magni! Unde
-                  praesentium accusantium et consectetur magni veritatis veniam
-                  autem, sapiente, beatae voluptatibus, voluptatum voluptates?
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </Col>
+        <Row>
+          {projects.map((project) => (
+            <Col md={4} key={project.proyecto_id} className="mb-4">
+              <Card>
+                <Card.Body>
+                  <Card.Title>{project.proyecto_titulo}</Card.Title>
+                  <Card.Text>{project.proyecto_descripcion}</Card.Text>
+                  <Button variant="primary" href={`/proyecto/${project.proyecto_id}`}>
+                    Ver más
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
-<Footer/>
+      </Container>
+      <Footer />
     </>
   );
 };
