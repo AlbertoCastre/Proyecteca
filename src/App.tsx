@@ -10,7 +10,7 @@ import Admin from "./components/view/Admin";
 import Sube from "./components/view/Sube";
 import Proyecto from "./components/layout/Proyecto";
 import Profile from "./components/view/Profile";
-// import EditProject from "./components/view/EditProject";
+
 import { UserProvider } from "./context/UserContext";
 
 const App: React.FC = () => {
@@ -21,14 +21,13 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<LaddingPage />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/proyectos" element={<Proyectos />} />
+            <Route path="/proyectos/carrera/:carreraId" element={<Proyectos />} />
             <Route path="/test" element={<Test />} />
-            {<Route path="/sube" element={<Sube />} />}
+            <Route path="/sube" element={<Sube />} />
             <Route path="/proyecto/:id" element={<Proyecto />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
-            {/* <Route path="/proyecto/editar" element={<EditProject />} /> */}
-            
+          
           </Routes>
         </UserProvider>
       </GoogleOAuthProvider>
