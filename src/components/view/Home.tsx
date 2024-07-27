@@ -9,10 +9,10 @@ import Image from "react-bootstrap/Image";
 import Footer from "../layout/Footer";
 import img1 from "./img/Img_Home.jpg";
 import ClienteAxios from "../../config/axios";
-import { Project } from '../../types/Project'; // Importa la interfaz específica
-import { useNavigate } from 'react-router-dom';
-import Pagination from 'react-bootstrap/Pagination';
-import Spinner from 'react-bootstrap/Spinner';
+import { Project } from "../../types/Project"; // Importa la interfaz específica
+import { useNavigate } from "react-router-dom";
+import Pagination from "react-bootstrap/Pagination";
+import Spinner from "react-bootstrap/Spinner";
 import { useUser } from "../../context/UserContext"; // Importa el UserContext
 
 const CombinedView: React.FC = () => {
@@ -26,7 +26,7 @@ const CombinedView: React.FC = () => {
   useEffect(() => {
     const fetchProyectos = async () => {
       try {
-        const response = await ClienteAxios.get('/home');
+        const response = await ClienteAxios.get("/home");
         setProyectos(response.data);
       } catch (error) {
         console.error("Error al obtener proyectos:", error);
@@ -45,7 +45,10 @@ const CombinedView: React.FC = () => {
   // Paginación
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = proyectos.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = proyectos.slice(
+    indexOfFirstProject,
+    indexOfLastProject
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -66,7 +69,10 @@ const CombinedView: React.FC = () => {
           <Col sm={5}>
             <h1 className="font-weight-light">Bienvenido</h1>
             <p>
-              Te invitamos a descubrir un espacio confiable y siempre accesible, donde podrás almacenar y compartir tus trabajos. Aquí, tus proyectos estarán protegidos y disponibles en cualquier momento y lugar, permitiéndote acceder a ellos con facilidad y tranquilidad.
+              Te invitamos a descubrir un espacio confiable y siempre accesible,
+              donde podrás almacenar y compartir tus trabajos. Aquí, tus
+              proyectos estarán protegidos y disponibles en cualquier momento y
+              lugar, permitiéndote acceder a ellos con facilidad y tranquilidad.
             </p>
           </Col>
         </Row>
@@ -83,15 +89,25 @@ const CombinedView: React.FC = () => {
           <>
             <Row>
               {currentProjects.map((proyecto) => (
-                <Col xs={12} sm={6} md={4} key={proyecto.proyecto_id} className="mb-4">
+                <Col
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  key={proyecto.proyecto_id}
+                  className="mb-4"
+                >
                   <Card className="h-100">
                     <Card.Body>
                       <Card.Title>{proyecto.proyecto_titulo}</Card.Title>
                       <Card.Text>{proyecto.proyecto_descripcion}</Card.Text>
                       <Card.Text>Autor: {proyecto.autor_nombre}</Card.Text>
                       <div className="d-flex justify-content-between">
-                        <Button variant="primary" onClick={() => handleVerMas(proyecto.proyecto_id)}>Ver más</Button>
-                        {/* Eliminado el botón de edición */}
+                        <Button
+                          variant="primary"
+                          onClick={() => handleVerMas(proyecto.proyecto_id)}
+                        >
+                          Ver más
+                        </Button>
                       </div>
                     </Card.Body>
                   </Card>
@@ -99,11 +115,18 @@ const CombinedView: React.FC = () => {
               ))}
             </Row>
             <Pagination className="justify-content-center">
-              {Array.from({ length: Math.ceil(proyectos.length / projectsPerPage) }, (_, i) => (
-                <Pagination.Item key={i + 1} active={i + 1 === currentPage} onClick={() => paginate(i + 1)}>
-                  {i + 1}
-                </Pagination.Item>
-              ))}
+              {Array.from(
+                { length: Math.ceil(proyectos.length / projectsPerPage) },
+                (_, i) => (
+                  <Pagination.Item
+                    key={i + 1}
+                    active={i + 1 === currentPage}
+                    onClick={() => paginate(i + 1)}
+                  >
+                    {i + 1}
+                  </Pagination.Item>
+                )
+              )}
             </Pagination>
           </>
         )}
