@@ -132,8 +132,9 @@ const Sube: React.FC = () => {
     <>
       <HeaderHome />
 
-      <Form className="p-4" onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="titulo">
+<div style={{padding:'50px 300px'}}>
+      <Form className="p-4"  onSubmit={handleSubmit}>
+        <Form.Group className="mb-3"  controlId="titulo">
           <Form.Label>Título del proyecto</Form.Label>
           <Form.Control
             type="text"
@@ -252,7 +253,7 @@ const Sube: React.FC = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+      </div>
       <Footer />
     </>
   );
