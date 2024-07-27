@@ -1,12 +1,13 @@
 // src/context/UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import ClienteAxios from '../config/axios'; // Asegúrate de que esta ruta sea correcta
 
 export interface User {
   id: number;
   name: string;
   email: string;
   googleId: string;
-  rol: number;
+  rol: number; // Asegúrate de que este campo esté presente
   profileImageUrl?: string; // Añadir la URL de la imagen de perfil
 }
 
@@ -31,6 +32,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.removeItem('user');
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.googleId) {
+        try {
+          const response = await ClienteAxios.get(`/user-role/${user.googleId}`);
+          if (response.data) {
+            setUser(prevUser => prevUser ? { ...prevUser, rol: response.data.rol_id } : null);
+          }
+        } catch (error) {
+          console.error("Error al obtener el rol del usuario:", error);
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [user?.googleId]);
 
   const logout = () => {
     setUser(null);

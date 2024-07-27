@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import ClienteAxios from '../../config/axios';
+import React from 'react';
+import { useUser } from '../../context/UserContext';
 
-function App() {
-  const [message, setMessage] = useState('');
+const SomeComponent: React.FC = () => {
+  const { user } = useUser(); // Obtén el usuario desde el contexto
 
-  useEffect(() => {
-    ClienteAxios.get('/test')
-      .then(response => {
-        setMessage(response.data.message);
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-      });
-  }, []);
+  if (!user) {
+    return <p>No estás logueado</p>;
+  }
+
+  const userRole = user.rol; // Accede al rol del usuario
 
   return (
     <div>
-      <h1>Test Connection</h1>
-      <p>{message}</p>
+      <h1>Bienvenido, {user.name}</h1>
+      <p>Tu rol es: {userRole}</p>
     </div>
   );
-}
+};
 
-export default App;
+export default SomeComponent;
