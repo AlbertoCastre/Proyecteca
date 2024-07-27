@@ -51,7 +51,7 @@ function Header() {
           </Navbar.Text>
         </Navbar.Collapse>
 
-        <Dropdown as={ButtonGroup} style={{ marginLeft: '5px' }}>
+        <Dropdown as={ButtonGroup} style={{ marginLeft: '10px', marginRight:'50px'}}>
           <Dropdown.Toggle split variant="success" id="dropdown-split-basic" style={{ backgroundColor: 'transparent', border:'transparent' }} />
           <Dropdown.Menu>
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
