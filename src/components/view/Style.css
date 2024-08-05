@@ -1,37 +1,43 @@
-
 .landing-page {
-  background: url(./img/EdificioPortada.jpg);
-  background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  overflow: hidden; /* Asegúrate de ocultar cualquier desbordamiento */
 }
+
+.landing-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url(./img/EdificioPortada.jpg) center/cover no-repeat;
+  filter: blur(3px); /* Ajusta el nivel de desenfoque aquí */
+  z-index: -1; /* Asegúrate de que el pseudo-elemento esté detrás del contenido */
+}
+
 .form-containet {
   display: flex;
   width: 1000px;
   height: 600px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 30px;
-  backdrop-filter: blur(20px);
   overflow: hidden;
+  z-index: 1; /* Asegúrate de que el contenido esté sobre el pseudo-elemento */
 }
 
- div .col-1 {
+div .col-1 {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 55%;
-  background: rgba(255, 255, 255, 0.3);
   background-repeat: blur(30px);
   border-radius: 0 30% 20% 0;
-  transition: border-radius .3s; 
+  transition: border-radius 0.3s; 
   color: white;
 }
-
 
 .content-container {
   display: flex;
@@ -60,23 +66,17 @@
   margin-bottom: 20px; /* Ajusta el margen según sea necesario */
 }
 
-
-@media(max-width: 892px) {
+@media (max-width: 892px) {
   .form-containet {
-      width: 80%;
+    width: 80%;
   }
   .col-1 {
-      display: none;
+    display: none;
   }
   .col-2 {
-      width: 100%;
+    width: 100%;
   }
 }
-
-
-
-
-
 
 /*SUBE*/
 .dropzone {
@@ -102,7 +102,7 @@
   color: #6c757d;
 }
 
-.mb-3{
+.mb-3 {
   background: rgb(255, 255, 255);
   align-items: center;
 }
