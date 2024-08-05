@@ -4,8 +4,9 @@ import Header from "../layout/Header-Home";
 import Footer from "../layout/Footer";
 import ClienteAxios from "../../config/axios";
 import { Project } from "../../types/Project";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
+import { Modal, Button } from "react-bootstrap";
 
 interface Categoria {
   categoria_id: number;
@@ -38,8 +39,9 @@ const Proyecto: React.FC = () => {
     const [archivo, setArchivo] = useState<File | null>(null);
     const [usuarioId, setUsuarioId] = useState<number | null>(null);
     const [formErrors, setFormErrors] = useState<string[]>([]);
-
+    const navigate = useNavigate();
     const { user } = useUser();
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -163,7 +165,21 @@ const Proyecto: React.FC = () => {
             console.error("Error al actualizar el proyecto:", error);
         }
     };
-    
+
+    const handleDelete = async () => {
+        try {
+            await ClienteAxios.delete(`/proyecto/${id}`);
+            console.log("Proyecto eliminado");
+            setShowModal(true);
+        } catch (error) {
+            console.error("Error al eliminar el proyecto:", error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        navigate("/home");
+    };
 
     if (!proyecto) {
         return <p>Cargando...</p>;
@@ -172,8 +188,10 @@ const Proyecto: React.FC = () => {
     const categoriaNombre = categorias.find(c => c.categoria_id === proyecto?.categoria_id)?.categoria_nombre || "Desconocida";
     const carreraNombre = carreras.find(c => c.carrera_id === proyecto?.carrera_id)?.carrera_nombre || "Desconocida";
     const estadoNombre = estados.find(e => e.estado_id === proyecto?.estado_id)?.estado_nombre || "Desconocido";
+    const autorNombre = proyecto?.usuario_nombre || "Desconocido"; // Ajustar según los datos disponibles
+    const fechaPublicacion = proyecto?.proyecto_fecha_subida ? new Date(proyecto.proyecto_fecha_subida).toLocaleDateString() : "Desconocida";
     const puedeEditar = proyecto?.usuario_id === usuarioId || user?.rol === 1;
-    
+
     return (
         <>
             <Header />
@@ -221,9 +239,9 @@ const Proyecto: React.FC = () => {
                                         onChange={(e) => setCategoriaId(parseInt(e.target.value))}
                                     >
                                         <option value="">Selecciona una categoría</option>
-                                        {categorias.map((c) => (
-                                            <option key={c.categoria_id} value={c.categoria_id}>
-                                                {c.categoria_nombre}
+                                        {categorias.map((categoria) => (
+                                            <option key={categoria.categoria_id} value={categoria.categoria_id}>
+                                                {categoria.categoria_nombre}
                                             </option>
                                         ))}
                                     </select>
@@ -237,9 +255,9 @@ const Proyecto: React.FC = () => {
                                         onChange={(e) => setCarreraId(parseInt(e.target.value))}
                                     >
                                         <option value="">Selecciona una carrera</option>
-                                        {carreras.map((c) => (
-                                            <option key={c.carrera_id} value={c.carrera_id}>
-                                                {c.carrera_nombre}
+                                        {carreras.map((carrera) => (
+                                            <option key={carrera.carrera_id} value={carrera.carrera_id}>
+                                                {carrera.carrera_nombre}
                                             </option>
                                         ))}
                                     </select>
@@ -254,9 +272,9 @@ const Proyecto: React.FC = () => {
                                             onChange={(e) => setEstadoId(parseInt(e.target.value))}
                                         >
                                             <option value="">Selecciona un estado</option>
-                                            {estados.map((e) => (
-                                                <option key={e.estado_id} value={e.estado_id}>
-                                                    {e.estado_nombre}
+                                            {estados.map((estado) => (
+                                                <option key={estado.estado_id} value={estado.estado_id}>
+                                                    {estado.estado_nombre}
                                                 </option>
                                             ))}
                                         </select>
@@ -266,21 +284,12 @@ const Proyecto: React.FC = () => {
                                     <label htmlFor="archivo">Archivo PDF:</label>
                                     <input
                                         type="file"
-                                        className="form-control"
+                                        className="form-control-file"
                                         id="archivo"
-                                        accept=".pdf"
-                                        onChange={(e) => {
-                                            const file = e.target.files ? e.target.files[0] : null;
-                                            if (file && file.type !== "application/pdf") {
-                                                setFormErrors(["El archivo debe ser un PDF."]);
-                                            } else {
-                                                setArchivo(file);
-                                                setFormErrors([]);
-                                            }
-                                        }}
+                                        onChange={(e) => setArchivo(e.target.files ? e.target.files[0] : null)}
                                     />
                                 </div>
-                                <button type="button" className="btn btn-primary mt-3" onClick={handleSave}>
+                                <button type="button" className="btn btn-primary" onClick={handleSave}>
                                     Guardar
                                 </button>
                             </form>
@@ -288,57 +297,49 @@ const Proyecto: React.FC = () => {
                     ) : (
                         <div>
                             <h2>{proyecto.proyecto_titulo}</h2>
-                            <p>
-                                <strong>Fecha de publicación</strong>
-                                <br />
-                                {new Date(proyecto.proyecto_fecha_subida).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Autor(es):</strong>
-                                <br /> {proyecto.autor_nombre}
-                            </p>
-                            <p>
-                                <strong>Carrera: </strong>
-                                <br /> {carreraNombre}
-                            </p>
-                            <p>
-                                <strong>Categoría: </strong>
-                                <br /> {categoriaNombre}
-                            </p>
-                            <p>
-                                <strong>Estado: </strong>
-                                <br /> {estadoNombre}
-                            </p>
-                            <p>
-                                <strong>Resumen:</strong>
-                                <br />
-                                {proyecto.proyecto_descripcion}
-                            </p>
-
-                            {pdfUrl ? (
-                                <div style={{ width: '100%', height: '500px', overflow: 'auto' }}>
+                            <p>{proyecto.proyecto_descripcion}</p>
+                            <p><strong>Autor:</strong> {proyecto.autor_nombre}</p>
+                            <p><strong>Fecha de Publicación:</strong> {fechaPublicacion}</p>
+                            <p><strong>Categoría:</strong> {categoriaNombre}</p>
+                            <p><strong>Carrera:</strong> {carreraNombre}</p>
+                            <p><strong>Estado:</strong> {estadoNombre}</p>
+                            {pdfUrl && (
+                                <div>
+                                    <h3>PDF:</h3>
                                     <iframe
                                         src={pdfUrl}
-                                        width="100%"
-                                        height="500px"
-                                        style={{ border: 'none' }}
-                                        title="Embedded PDF Viewer"
+                                        style={{ width: "100%", height: "500px" }}
+                                        title="PDF Viewer"
                                     ></iframe>
                                 </div>
-                            ) : (
-                                <p>No hay PDF disponible.</p>
                             )}
-
                             {puedeEditar && (
-                                <button className="btn btn-primary mt-3" onClick={handleEdit}>
-                                    Editar Proyecto
-                                </button>
+                                <div>
+                                    <button className="btn btn-primary" onClick={handleEdit}>
+                                        Editar
+                                    </button>
+                                    <button className="btn btn-danger" onClick={handleDelete}>
+                                        Eliminar
+                                    </button>
+                                </div>
                             )}
                         </div>
                     )}
                 </div>
             </div>
             <Footer />
+            
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Proyecto Eliminado</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>El proyecto ha sido eliminado correctamente.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };

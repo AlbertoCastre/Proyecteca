@@ -68,7 +68,7 @@ const CombinedView: React.FC = () => {
           </Col>
           <Col sm={5}>
             <h1 className="font-weight-light">Bienvenido</h1>
-            <p>
+            <p style={{ textAlign: 'justify' }}>
               Te invitamos a descubrir un espacio confiable y siempre accesible,
               donde podrás almacenar y compartir tus trabajos. Aquí, tus
               proyectos estarán protegidos y disponibles en cualquier momento y

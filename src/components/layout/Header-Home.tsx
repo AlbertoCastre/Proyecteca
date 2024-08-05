@@ -60,8 +60,7 @@ function Header() {
           <Dropdown as={ButtonGroup} style={{ marginLeft: '10px', marginRight: '50px' }}>
             <Dropdown.Toggle split variant="success" id="dropdown-split-basic" style={{ backgroundColor: 'transparent', border: 'transparent' }} />
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+              
               {user && <Dropdown.Item onClick={handleLogout}>Cerrar sesión</Dropdown.Item>}
             </Dropdown.Menu>
           </Dropdown>
