@@ -188,7 +188,7 @@ const Proyecto: React.FC = () => {
     const categoriaNombre = categorias.find(c => c.categoria_id === proyecto?.categoria_id)?.categoria_nombre || "Desconocida";
     const carreraNombre = carreras.find(c => c.carrera_id === proyecto?.carrera_id)?.carrera_nombre || "Desconocida";
     const estadoNombre = estados.find(e => e.estado_id === proyecto?.estado_id)?.estado_nombre || "Desconocido";
-    const autorNombre = proyecto?.usuario_nombre || "Desconocido"; // Ajustar según los datos disponibles
+    
     const fechaPublicacion = proyecto?.proyecto_fecha_subida ? new Date(proyecto.proyecto_fecha_subida).toLocaleDateString() : "Desconocida";
     const puedeEditar = proyecto?.usuario_id === usuarioId || user?.rol === 1;
 
