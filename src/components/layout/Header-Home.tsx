@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUser } from '../../context/UserContext';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,7 +11,7 @@ import Logo from './img/logo_v2.png';
 
 function Header() {
   const { user, logout } = useUser();
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
@@ -47,7 +47,12 @@ function Header() {
                 <NavDropdown.Item eventKey="6">Licenciatura en Administración y Gestión Empresarial</NavDropdown.Item>
               </NavDropdown>
               {user && (
-                <Nav.Link href="/sube">Publicar un Proyecto</Nav.Link>
+                <>
+                  <Nav.Link href="/sube">Publicar un Proyecto</Nav.Link>
+                  {user.rol === 2 && (
+                    <Nav.Link href="/ReviewProject">Revisar Proyectos</Nav.Link>
+                  )}
+                </>
               )}
             </Nav>
           </Navbar.Collapse>
@@ -60,7 +65,6 @@ function Header() {
           <Dropdown as={ButtonGroup} style={{ marginLeft: '10px', marginRight: '50px' }}>
             <Dropdown.Toggle split variant="success" id="dropdown-split-basic" style={{ backgroundColor: 'transparent', border: 'transparent' }} />
             <Dropdown.Menu>
-              
               {user && <Dropdown.Item onClick={handleLogout}>Cerrar sesión</Dropdown.Item>}
             </Dropdown.Menu>
           </Dropdown>
