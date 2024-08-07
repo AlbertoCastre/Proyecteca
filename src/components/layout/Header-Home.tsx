@@ -49,7 +49,7 @@ function Header() {
               {user && (
                 <>
                   <Nav.Link href="/sube">Publicar un Proyecto</Nav.Link>
-                  {user.rol === 2 && (
+                  {user.rol === 1 && (
                     <Nav.Link href="/ReviewProject">Revisar Proyectos</Nav.Link>
                   )}
                 </>
