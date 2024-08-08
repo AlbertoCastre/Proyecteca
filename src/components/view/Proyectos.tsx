@@ -53,13 +53,15 @@ const Proyectos: React.FC = () => {
     }
   };
 
+  const carreraSeleccionada = carreras.find(carrera => carrera.carrera_id.toString() === carreraId)?.carrera_nombre || "Todas las Carreras";
+
   return (
     <>
       <HeaderHome />
       <Container className="my-4">
         <Row className="justify-content-between align-items-center mb-3">
           <Col md="auto">
-            <h2>Proyectos Aprobados</h2>
+            <h2>{carreraSeleccionada}</h2>
           </Col>
           <Col md="auto">
             <NavDropdown title="Seleccionar Carrera" onSelect={handleCarreraChange}>
@@ -68,7 +70,7 @@ const Proyectos: React.FC = () => {
                 <NavDropdown.Item key={carrera.carrera_id} eventKey={carrera.carrera_id.toString()}>
                   {carrera.carrera_nombre}
                 </NavDropdown.Item>
-              ))}
+              ))} 
             </NavDropdown>
           </Col>
         </Row>
@@ -79,7 +81,7 @@ const Proyectos: React.FC = () => {
                 <Card.Body>
                   <Card.Title>{project.proyecto_titulo}</Card.Title>
                   <Card.Text>{project.proyecto_descripcion}</Card.Text>
-                  <Button variant="primary" href={`/proyecto/${project.proyecto_id}`}>
+                  <Button variant="primary" href={`/proyecto/${project.proyecto_id}`} style={{backgroundColor:'brown'}}>
                     Ver más
                   </Button>
                 </Card.Body>

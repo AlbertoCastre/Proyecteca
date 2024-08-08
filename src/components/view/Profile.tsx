@@ -78,8 +78,8 @@ const ProfileAndProjects: React.FC = () => {
                         style={{ width: "150px" }}
                         fluid
                       />
-                      <p className="text-muted mb-1">Full Stack Developer</p>
-                      <p className="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                      <p className="text-muted mb-1">{user?.name}</p>
+                      <p className="text-muted mb-4">Usuario</p>
                     </MDBCardBody>
                   </MDBCard>
                 </Col>

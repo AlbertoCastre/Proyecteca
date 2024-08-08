@@ -39,12 +39,12 @@ function Header() {
               <Nav.Link href="/home">Inicio</Nav.Link>
               <Nav.Link href="/profile">Perfil</Nav.Link>
               <NavDropdown title="Carreras" id="basic-nav-dropdown" onSelect={handleSelectCarrera}>
-                <NavDropdown.Item eventKey="1">Ingeniería en Software</NavDropdown.Item>
-                <NavDropdown.Item eventKey="2">Ingeniería Financiera</NavDropdown.Item>
-                <NavDropdown.Item eventKey="3">Ingeniería en Biomédica</NavDropdown.Item>
-                <NavDropdown.Item eventKey="4">Ingeniería en Biotecnología</NavDropdown.Item>
-                <NavDropdown.Item eventKey="5">Licenciatura en Terapia Física</NavDropdown.Item>
-                <NavDropdown.Item eventKey="6">Licenciatura en Administración y Gestión Empresarial</NavDropdown.Item>
+                <NavDropdown.Item eventKey="1">Ingeniería en Software</NavDropdown.Item>    
+                <NavDropdown.Item eventKey="2">Ingeniería Biomédica</NavDropdown.Item>
+                <NavDropdown.Item eventKey="3">Ingeniería en Biotecnología</NavDropdown.Item>
+                <NavDropdown.Item eventKey="4">Licenciatura en Terapia Física</NavDropdown.Item>
+                <NavDropdown.Item eventKey="5">Licenciatura en Administración y Gestión Empresarial</NavDropdown.Item>
+                <NavDropdown.Item eventKey="6">Ingeniería Financiera</NavDropdown.Item>
               </NavDropdown>
               {user && (
                 <>

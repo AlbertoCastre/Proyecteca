@@ -3,6 +3,7 @@ import Footer from "../layout/Footer";
 import { useDropzone } from "react-dropzone";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ClienteAxios from "../../config/axios";
@@ -20,7 +21,13 @@ interface Carrera {
   carrera_nombre: string;
 }
 
-function SwitchExample({ isChecked, onChange }: { isChecked: boolean; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+function SwitchExample({
+  isChecked,
+  onChange,
+}: {
+  isChecked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   return (
     <Form>
       <Form.Check
@@ -77,7 +84,13 @@ const Sube: React.FC = () => {
       return;
     }
 
-    if (!titulo || !descripcion || !selectedCategoria || !selectedCarrera || !archivo) {
+    if (
+      !titulo ||
+      !descripcion ||
+      !selectedCategoria ||
+      !selectedCarrera ||
+      !archivo
+    ) {
       alert("Todos los campos son obligatorios");
       return;
     }
@@ -124,7 +137,10 @@ const Sube: React.FC = () => {
       setArchivo(null);
       setIsAccepted(false);
     } catch (error) {
-      console.error("Error al obtener el usuario_id o al subir el proyecto:", error);
+      console.error(
+        "Error al obtener el usuario_id o al subir el proyecto:",
+        error
+      );
     }
   };
 
@@ -132,126 +148,156 @@ const Sube: React.FC = () => {
     <>
       <HeaderHome />
 
-      <Form className="p-4" onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="titulo">
-          <Form.Label>Título del proyecto</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Título del proyecto"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <Container fluid="md">
+        <Row>
+          <Col>
+            <Form className="p-4" onSubmit={handleSubmit}>
+              <p className="text-danger">* Campos obligatorios</p>
+              
+              <Form.Group className="mb-3" controlId="titulo">
+                <Form.Label>
+                  Título del proyecto <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Título del proyecto"
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-        <Form.Group className="mb-3" controlId="autor">
-          <Form.Label>Nombre del autor</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder={user?.name || "Nombre del autor"}
-            readOnly
-          />
-        </Form.Group>
+              <Form.Group className="mb-3" controlId="autor">
+                <Form.Label>Nombre del autor</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder={user?.name || "Nombre del autor"}
+                  readOnly
+                />
+              </Form.Group>
 
-        <Form.Group className="mb-3" controlId="carrera">
-          <Form.Label>Programa educativo</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedCarrera}
-            onChange={(e) => setSelectedCarrera(e.target.value)}
-            required
-          >
-            <option value="">Selecciona una carrera</option>
-            {carreras.map((carrera) => (
-              <option key={carrera.carrera_id} value={carrera.carrera_id}>
-                {carrera.carrera_nombre}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
+              <Form.Group className="mb-3" controlId="carrera">
+                <Form.Label>
+                  Programa educativo <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={selectedCarrera}
+                  onChange={(e) => setSelectedCarrera(e.target.value)}
+                  required
+                >
+                  <option value="">Selecciona una carrera</option>
+                  {carreras.map((carrera) => (
+                    <option key={carrera.carrera_id} value={carrera.carrera_id}>
+                      {carrera.carrera_nombre}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
 
-        <Form.Group className="mb-3" controlId="categoria">
-          <Form.Label>Categoría</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedCategoria}
-            onChange={(e) => setSelectedCategoria(e.target.value)}
-            required
-          >
-            <option value="">Selecciona una categoría</option>
-            {categorias.map((categoria) => (
-              <option key={categoria.categoria_id} value={categoria.categoria_id}>
-                {categoria.categoria_nombre}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
+              <Form.Group className="mb-3" controlId="categoria">
+                <Form.Label>
+                  Categoría <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={selectedCategoria}
+                  onChange={(e) => setSelectedCategoria(e.target.value)}
+                  required
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {categorias.map((categoria) => (
+                    <option
+                      key={categoria.categoria_id}
+                      value={categoria.categoria_id}
+                    >
+                      {categoria.categoria_nombre}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
 
-        <Form.Group className="mb-3" controlId="descripcion">
-          <Form.Label>Descripción del proyecto</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={6}
-            style={{ resize: "none" }}
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            required
-          />
-        </Form.Group>
+              <Form.Group className="mb-3" controlId="descripcion">
+                <Form.Label>
+                  Descripción del proyecto <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={6}
+                  style={{ resize: "none" }}
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-        <Form.Group className="position-relative mb-3" {...getRootProps()}>
-          <Form.Label>Subir archivo (PDF)</Form.Label>
-          <div className={`dropzone ${isDragActive ? "active" : ""}`}>
-            <input
-              {...getInputProps()}
-              style={{
-                position: "absolute",
-                left: "0",
-                top: "0",
-                width: "100%",
-                height: "100%",
-                opacity: 0,
-                cursor: "pointer",
-              }}
-              required
-            />
-            <i
-              className="bi bi-cloud-arrow-up"
-              style={{ fontSize: "60px", marginBottom: "15px" }}
-            ></i>
-            <p>
-              {archivo
-                ? `Archivo seleccionado: ${archivo.name}`
-                : "Arrastre y suelte los archivos aquí para subirlos"}
-            </p>
-          </div>
-        </Form.Group>
+              <Form.Group
+                className="position-relative mb-3"
+                {...getRootProps()}
+              >
+                <Form.Label>
+                  Subir archivo (PDF) <span className="text-danger">*</span>
+                </Form.Label>
+                <div className={`dropzone ${isDragActive ? "active" : ""}`}>
+                  <input
+                    {...getInputProps()}
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "0",
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      cursor: "pointer",
+                    }}
+                    required
+                  />
+                  <i
+                    className="bi bi-cloud-arrow-up"
+                    style={{ fontSize: "60px", marginBottom: "15px" }}
+                  ></i>
+                  <p>
+                    {archivo
+                      ? `Archivo seleccionado: ${archivo.name}`
+                      : "Arrastre y suelte los archivos aquí para subirlos"}
+                  </p>
+                </div>
+              </Form.Group>
 
-        <SwitchExample
-          isChecked={isAccepted}
-          onChange={(e) => setIsAccepted(e.target.checked)}
-        />
+              <SwitchExample
+                isChecked={isAccepted}
+                onChange={(e) => setIsAccepted(e.target.checked)}
+              />
 
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="submit" disabled={!isAccepted}>
-              Publicar proyecto
-            </Button>
+              <Form.Group as={Row} className="mb-3">
+                <Col sm={{ span: 10, offset: 2 }}>
+                  <Button
+                    type="submit"
+                    disabled={!isAccepted}
+                    style={{ backgroundColor: "brown" }}
+                  >
+                    Publicar proyecto
+                  </Button>
+                </Col>
+              </Form.Group>
+            </Form>
+
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Proyecto Publicado</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¡El proyecto ha sido publicado exitosamente!
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Cerrar
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </Col>
-        </Form.Group>
-      </Form>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Proyecto Publicado</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>¡El proyecto ha sido publicado exitosamente!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        </Row>
+      </Container>
 
       <Footer />
     </>
