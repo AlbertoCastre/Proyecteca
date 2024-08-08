@@ -17,7 +17,7 @@ PROYECTECA es una aplicación frontend que proporciona una interfaz de usuario r
 
 En el directorio del proyecto, puedes ejecutar los siguientes comandos:
 
-- **`npm run start`**: Inicia el servidor de desarrollo con Vite. El proyecto se ejecutará en `http://localhost:3000` por defecto.
+- **`npm run start`**: Inicia el servidor de desarrollo con Vite. El proyecto se ejecutará en `http://localhost:3333` por defecto.
 - **`npm run build`**: Construye la aplicación para producción en la carpeta `dist`.
 - **`npm run lint`**: Ejecuta ESLint para verificar y corregir problemas en el código.
 - **`npm run preview`**: Previsualiza la aplicación de producción después de ser construida.
@@ -94,9 +94,6 @@ El proyecto viene preconfigurado con ESLint para garantizar un código limpio y 
     ],
     ```
 
-## Licencia
-
-Este proyecto está bajo la licencia [MIT](./LICENSE).
 
 ---
 
