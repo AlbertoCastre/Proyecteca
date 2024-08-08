@@ -1,4 +1,4 @@
-# ProyectoCA - React + TypeScript + Vite
+# PROYECTECA - React + TypeScript + Vite
 
 Este proyecto es el cliente de una aplicación cliente-servidor desarrollada con React, TypeScript y Vite. Utiliza Bootstrap para el diseño de la interfaz y está configurado con ESLint para mantener la calidad del código.
 
