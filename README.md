@@ -97,4 +97,4 @@ El proyecto viene preconfigurado con ESLint para garantizar un código limpio y 
 
 ---
 
-Gracias por contribuir y utilizar ProyectoCA. Si tienes alguna pregunta o sugerencia, no dudes en abrir un issue o contactarnos.
+Gracias por contribuir y utilizar PROYECTECA. Si tienes alguna pregunta o sugerencia, no dudes en abrir un issue o contactarnos.
