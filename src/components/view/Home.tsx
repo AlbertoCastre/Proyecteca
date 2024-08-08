@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import Spinner from "react-bootstrap/Spinner";
 import { useUser } from "../../context/UserContext"; // Importa el UserContext
+import './Style.css';
 
 const CombinedView: React.FC = () => {
   const [proyectos, setProyectos] = useState<Project[]>([]);
@@ -101,8 +102,9 @@ const CombinedView: React.FC = () => {
                       <Card.Title>{proyecto.proyecto_titulo}</Card.Title>
                       <Card.Text>{proyecto.proyecto_descripcion}</Card.Text>
                       <Card.Text>Autor: {proyecto.autor_nombre}</Card.Text>
-                      <div className="d-flex justify-content-between">
-                        <Button
+                      <div className="d-flex justify-content-between" >
+                        
+                        <Button style={{backgroundColor:'brown'}}
                           variant="primary"
                           onClick={() => handleVerMas(proyecto.proyecto_id)}
                         >

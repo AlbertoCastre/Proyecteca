@@ -154,7 +154,7 @@ const Proyecto: React.FC = () => {
             console.log("Proyecto actualizado:", response.data);
             setEditMode(false);
     
-            // Actualiza la URL del PDF si se ha subido uno nuevo
+        
             if (archivo) {
                 const newPdfResponse = await ClienteAxios.get(`/proyecto/${id}/pdf`, { responseType: 'arraybuffer' });
                 const blob = new Blob([newPdfResponse.data], { type: 'application/pdf' });
@@ -280,16 +280,16 @@ const Proyecto: React.FC = () => {
                                         </select>
                                     </div>
                                 )}
-                                <div className="form-group">
-                                    <label htmlFor="archivo">Archivo PDF:</label>
-                                    <input
+                                <div className="form-group" style={{padding:'20px'}}>
+                                    <label htmlFor="archivo" >Archivo PDF:</label>
+                                    <input 
                                         type="file"
                                         className="form-control-file"
                                         id="archivo"
                                         onChange={(e) => setArchivo(e.target.files ? e.target.files[0] : null)}
                                     />
                                 </div>
-                                <button type="button" className="btn btn-primary" onClick={handleSave}>
+                                <button type="button" className="btn btn-primary" onClick={handleSave} style={{backgroundColor:'Green'}}>
                                     Guardar
                                 </button>
                             </form>
@@ -304,9 +304,9 @@ const Proyecto: React.FC = () => {
                             <p><strong>Carrera:</strong> {carreraNombre}</p>
                             <p><strong>Estado:</strong> {estadoNombre}</p>
                             {pdfUrl && (
-                                <div>
+                                <div >
                                     <h3>PDF:</h3>
-                                    <iframe
+                                    <iframe 
                                         src={pdfUrl}
                                         style={{ width: "100%", height: "500px" }}
                                         title="PDF Viewer"
@@ -315,7 +315,7 @@ const Proyecto: React.FC = () => {
                             )}
                             {puedeEditar && (
                                 <div>
-                                    <button className="btn btn-primary" onClick={handleEdit}>
+                                    <button className="btn btn-primary" onClick={handleEdit} style={{margin:'10px', backgroundColor:'orange'}}>
                                         Editar
                                     </button>
                                     <button className="btn btn-danger" onClick={handleDelete}>

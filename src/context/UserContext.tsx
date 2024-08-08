@@ -7,8 +7,8 @@ export interface User {
   name: string;
   email: string;
   googleId: string;
-  rol: number; // Asegúrate de que este campo esté presente
-  profileImageUrl?: string; // Añadir la URL de la imagen de perfil
+  rol: number; 
+  profileImageUrl?: string; 
 }
 
 interface UserContextType {
